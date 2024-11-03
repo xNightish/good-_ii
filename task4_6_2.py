@@ -1,8 +1,8 @@
-from multiprocessing import reduction
+from matplotlib import pyplot as plt
 import numpy as np
 from sklearn import svm
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, roc_curve, auc
+from sklearn.metrics import confusion_matrix
 
 np.random.seed(0)
 
@@ -33,16 +33,13 @@ x_train, x_test, y_train, y_test = train_test_split(data_x, data_y, random_state
 clf = svm.SVC(kernel='linear')
 clf.fit(x_train, y_train)
 
-# Получение коэффициентов весов
-w = np.hstack([clf.intercept_[0], clf.coef_[0]])
-
-# Вычисление значений ROC-кривой
-range_t = np.arange(5.7, -8, -0.1)
-FPR = []
-TPR = []
-
 # Получение вероятностей принадлежности к положительному классу
 y_scores = clf.decision_function(x_test)
+
+# Вычисление значений ROC-кривой
+range_t = np.arange(5.7, -7.8, -0.1)
+FPR = []
+TPR = []
 
 # Вычисление ROC-кривой
 for t in range_t:
@@ -53,5 +50,26 @@ for t in range_t:
     
     FPR.append(fp / (fp + tn))
     TPR.append(tp / (tp + fn))
-    
-print(FPR)
+
+# Добавляем начальную и конечную точки
+FPR = [0] + FPR + [1]  # Начинаем с 0
+TPR = [0] + TPR + [0]  # Заканчиваем на 0
+
+# Визуализация ROC-кривой
+plt.figure(figsize=(10, 6))
+plt.plot(FPR, TPR, color='green', label='ROC-кривая')
+plt.fill_between(FPR, TPR, alpha=0.2, color='green')  # Закрашиваем площадь под кривой
+plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Случайный классификатор')
+plt.title('ROC-кривая', fontsize=16)
+plt.xlabel('FPR', fontsize=14)
+plt.ylabel('TPR', fontsize=14)
+plt.legend()
+plt.grid()
+plt.xlim(0, 1)  # Устанавливаем пределы по оси X
+plt.ylim(0, 1.01)  # Устанавливаем пределы по оси Y
+plt.show()
+
+
+
+
+
