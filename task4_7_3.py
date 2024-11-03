@@ -1,10 +1,15 @@
-# Начальные значения
-TP = 87
-FN = 13
-TN = 150
-FP = 50
+# Координаты первой точки
+x1 = -3
+y1 = 5
 
-precision = TP / (TP + FP)
-recall = TP / (TP + FN)
+# Координаты второй точки
+x2 = 7
+y2 = 5
 
-print(f'precision = {precision}, recall = {recall}')
+# Вычисление весов
+w1 = (y2 - y1) / (x2 - x1)
+w0 = w1 * (-x1) + y1
+w = [w0, w1, -1]
+
+# Вывод результата
+print(w)
