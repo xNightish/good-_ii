@@ -57,7 +57,7 @@ TPR = [0] + TPR + [0]  # Заканчиваем на 0
 
 # Визуализация ROC-кривой
 plt.figure(figsize=(10, 6))
-plt.plot(FPR, TPR, color='green', label='ROC-кривая')
+plt.plot(FPR, TPR, color='green', label=f'ROC-кривая (ROC-AUC = {clf.score(x_test, y_test):.2f})')
 plt.fill_between(FPR, TPR, alpha=0.2, color='green')  # Закрашиваем площадь под кривой
 plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Случайный классификатор')
 plt.title('ROC-кривая', fontsize=16)
