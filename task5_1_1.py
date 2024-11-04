@@ -1,3 +1,4 @@
+from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 from collections import Counter
@@ -45,6 +46,28 @@ Q = sum(predict != y_test)
 # Выводим результаты
 print("Прогнозы для тестовой выборки:", predict)
 print("Количество неправильных предсказаний:", Q)
+
+import matplotlib.pyplot as plt
+
+# Визуализация тестовых данных
+plt.figure(figsize=(10, 6))
+
+# Отображаем тестовую выборку
+plt.scatter(x_test[y_test == -1][:, 0], x_test[y_test == -1][:, 1], color='red', label='Класс -1 (Тестовая выборка)', marker='o')
+plt.scatter(x_test[y_test == 1][:, 0], x_test[y_test == 1][:, 1], color='blue', label='Класс 1 (Тестовая выборка)', marker='o')
+
+# Отображаем неправильные классификации
+wrong_predictions = x_test[predict != y_test]
+plt.scatter(wrong_predictions[:, 0], wrong_predictions[:, 1], color='black', label='Неправильная классификация', marker='x', s=100)
+
+# Настройки графика
+plt.title('Классификация с использованием метода ближайших соседей', fontsize=16)
+plt.xlabel('Признак 1')
+plt.ylabel('Признак 2')
+plt.legend()
+plt.grid()
+# plt.savefig('task5_1_1.png')
+plt.show()
 
 
 
