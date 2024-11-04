@@ -1,3 +1,4 @@
+from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 from collections import Counter
@@ -70,3 +71,43 @@ Q = np.mean(predict != y_test)
 # Выводим результаты
 print("Прогнозы для тестовой выборки:", predict, sep='\n')
 print("Количество неправильных предсказаний:", Q)
+
+
+# Функция для визуализации результатов
+def plot_knn_results(x_test, y_test, predictions):
+    plt.figure(figsize=(12, 8))
+    
+    # Определяем уникальные классы
+    unique_classes = np.unique(y_test)
+    
+    # Цвета для каждого класса
+    colors = ['red', 'green', 'blue']  # Добавьте цвета по мере необходимости
+
+    # Визуализируем тестовую выборку
+    for i, class_label in enumerate(unique_classes):
+        # Индексы тестовых данных для данного класса
+        class_indices = np.where(y_test == class_label)[0]
+        plt.scatter(x_test[class_indices, 0], x_test[class_indices, 1], 
+                    color=colors[i], label=f'Класс {class_label}', alpha=0.5, edgecolor='k', s=100)
+
+        # Визуализируем предсказанные классы
+        for j in class_indices:
+            if predictions[j] == y_test[j]:
+                # Правильная классификация (кружок)
+                plt.scatter(x_test[j, 0], x_test[j, 1], 
+                            c=colors[i], marker='o', s=100, edgecolor='k')
+            else:
+                # Неправильная классификация (крестик)
+                plt.scatter(x_test[j, 0], x_test[j, 1], 
+                            c='black', marker='x', s=200, label='Неправильная классификация' if j == class_indices[0] else "")
+
+    plt.title('Результаты классификации KNN')
+    plt.xlabel('Признак 1')
+    plt.ylabel('Признак 2')
+    plt.legend()
+    plt.grid()
+    # plt.savefig('task5_1_2.png')
+    plt.show()
+
+# Визуализируем результаты
+plot_knn_results(x_test, y_test, predict)
