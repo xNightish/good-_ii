@@ -1,14 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Координаты четырех точек
-x = np.array([0, 1, 2, 3])
-y = np.array([0.5, 0.8, 0.6, 0.2])
 
-# Множество точек для промежуточного восстановления функции
-x_est = np.arange(0, 3.1, 0.1)
+def func(x):
+    return 0.1 * x - np.cos(x/2) + 0.4 * np.sin(3*x) + 5
 
-# Метрика расстояния
+
+np.random.seed(0)
+
+x = np.arange(-5.0, 5.0, 0.1) # значения по оси абсцисс [-5; 5] с шагом 0.1
+y = func(x) + np.random.normal(0, 0.2, len(x)) # значения функции по оси ординат
+
 p = lambda x, x_k: np.abs(x_k - x)
 
 # Функции ядра
@@ -27,15 +29,16 @@ for K, name in zip(Ks, kernel_names):
     fig, axs = plt.subplots(2, 2, figsize=(15, 10))
     
     # Значения h для разных подграфиков
-    h_values = [0.1, 0.3, 1, 10]
+    h_values = [0.1, 0.5, 1, 10]
     
     for ax, h in zip(axs.flatten(), h_values):
         # Векторизованное вычисление весов
-        weights = K(p(x_est[:, np.newaxis], x) / h)  # Формируем массив весов
+        weights = K(p(x[:, np.newaxis], x) / h)  # Формируем массив весов
 
         # Вычисление суммы весов и взвешенной суммы
         weights_sum = np.sum(weights, axis=1)
         weighted_sum = np.nansum(weights * y, axis=1)
+        
 
         # Вычисление y_est с обработкой деления на ноль
         with np.errstate(divide='ignore', invalid='ignore'):
@@ -44,10 +47,15 @@ for K, name in zip(Ks, kernel_names):
         # Заменяем NaN и inf на 0
         y_est[np.isnan(y_est)] = 0
         y_est[np.isinf(y_est)] = 0
+        
+        if h == 0.5 and K == K_g:
+            Q = np.mean((y - y_est)**2)
+            res = y_est
 
         # Визуализация
-        ax.plot(x_est, y_est, label=f'Восстановленная функция (h={h})', color='blue')
-        ax.scatter(x, y, color='red', label='Исходные точки')
+        ax.plot(x, y_est, label=f'Восстановленная функция (h={h})', color='blue', alpha=0.8, linestyle='--')
+        ax.plot(x, func(x), label='Исходная функция', color='green')
+        ax.scatter(x, y, color='red', label='Исходные точки', alpha=0.3)
         ax.set_title(f'{name} ядро: Восстановление функции с h={h}')
         ax.set_xlabel('x')
         ax.set_ylabel('y')
@@ -56,14 +64,7 @@ for K, name in zip(Ks, kernel_names):
 
     plt.tight_layout()
     plt.show()
+    
 
-
-
-# Вычисление восстановленной функции
-h = 1
-
-# Векторизованное вычисление весов
-weights = K(p(x_est[:, np.newaxis], x) / h)  # Формируем массив весов
-
-# Рассчитываем восстановленные значения функции
-y_est = np.sum(weights * y, axis=1) / np.sum(weights, axis=1)
+print('Показатель качества Q = ', Q)
+print('Восстановленная функция = ', res, sep='\n')
