@@ -1,3 +1,4 @@
+from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 
@@ -65,6 +66,36 @@ print("Предсказания:", predict)
 print("Показатель качества Q:", Q)
 
 
+
+# Создание сетки для прогнозирования зон классификации
+x_min, x_max = data_x[:, 0].min() - 1, data_x[:, 0].max() + 1
+y_min, y_max = data_x[:, 1].min() - 1, data_x[:, 1].max() + 1
+xx, yy = np.meshgrid(np.linspace(x_min, x_max, 100), np.linspace(y_min, y_max, 100))
+
+# Прогнозирование для каждой точки в сетке
+Z = classify(np.c_[xx.ravel(), yy.ravel()], x_train, y_train)
+Z = np.array(Z).reshape(xx.shape)
+
+# Визуализация результатов с зонами классификации
+plt.figure(figsize=(10, 6))
+
+# Отображение зон классификации
+contour = plt.contourf(xx, yy, Z, alpha=0.3, levels=np.arange(-0.5, len(np.unique(y_train)) + 1, 1), cmap='viridis_r')
+
+# Тестовая выборка
+for i, cls in enumerate(np.unique(y_test)):
+    plt.scatter(x_test[y_test == cls][:, 0], x_test[y_test == cls][:, 1], color=['orange', 'green', 'blue'][i], marker='o', label=f'Класс {cls} (Тест)', alpha=0.7)
+
+# Настройки графика
+plt.title('Классификация тестовой выборки с зонами классификации')
+plt.xlabel('Признак 1')
+plt.ylabel('Признак 2')
+plt.legend()
+plt.grid()
+
+plt.savefig('task5_2_1.png')
+# Вывод графика
+plt.show()
 
 
     
