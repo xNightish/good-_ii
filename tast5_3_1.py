@@ -12,13 +12,11 @@ x_est = np.arange(0, 3.1, 0.1)
 p = lambda x, x_k: np.abs(x_k - x)
 
 # Функции ядра
-K_tr = lambda r: (1 - abs(r)) * np.abs(r <= 1)  # Треугольное окно
+K_tr = lambda r: (1 - np.abs(r)) * (np.abs(r) <= 1)  # Треугольное окно
 K_g = lambda r: (1 / np.sqrt(2 * np.pi)) * np.exp(-0.5 * r**2)  # Гауссово ядро
-K_ep = lambda r: 3/4 * (1 - r**2) * np.abs(r <= 1)  # Ядро Епанечникова
-K_q = lambda r: 15/16 * (1 - r**2) ** 2 * np.abs(r <= 1) # Ядро квадратное
-K_pr = lambda r: 1/2 * np.abs(r <= 1)  # Ядро прямоугольное
-
-
+K_ep = lambda r: 3/4 * (1 - r**2) * (np.abs(r) <= 1)  # Ядро Епанечникова
+K_q = lambda r: 15/16 * (1 - r**2) ** 2 * (np.abs(r) <= 1)  # Ядро квадратное
+K_pr = lambda r: 1/2 * (np.abs(r) <= 1)  # Ядро прямоугольное
 
 Ks = [K_tr, K_g, K_ep, K_q, K_pr]
 kernel_names = ['Треугольное', 'Гауссово', 'Епанечникова', 'Квадратное', 'Прямоугольное']
@@ -35,11 +33,17 @@ for K, name in zip(Ks, kernel_names):
         # Векторизованное вычисление весов
         weights = K(p(x_est[:, np.newaxis], x) / h)  # Формируем массив весов
 
-        # Рассчитываем восстановленные значения функции
-        y_est = np.sum(weights * y, axis=1) / np.sum(weights, axis=1)
+        # Вычисление суммы весов и взвешенной суммы
+        weights_sum = np.sum(weights, axis=1)
+        weighted_sum = np.nansum(weights * y, axis=1)
 
-        # Обработка случаев деления на ноль
-        y_est[np.isnan(y_est)] = 0  # Если сумма весов равна 0, ставим 0
+        # Вычисление y_est с обработкой деления на ноль
+        with np.errstate(divide='ignore', invalid='ignore'):
+            y_est = weighted_sum / weights_sum 
+
+        # Заменяем NaN и inf на 0
+        y_est[np.isnan(y_est)] = 0
+        y_est[np.isinf(y_est)] = 0
 
         # Визуализация
         ax.plot(x_est, y_est, label=f'Восстановленная функция (h={h})', color='blue')
@@ -52,6 +56,8 @@ for K, name in zip(Ks, kernel_names):
 
     plt.tight_layout()
     plt.show()
+
+
 
 # Вычисление восстановленной функции
 h = 1
