@@ -37,28 +37,3 @@ X = [list(map(tuple, data_x[y == m])) for m in range(K)]
 
 # Вывод результата
 print(*X, sep='\n')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
