@@ -36,8 +36,9 @@ ax1.set_xlabel("X")
 ax1.set_ylabel("Y")
 ax1.legend()
 # Дендограмма
-dendrogram(linked, orientation='top', distance_sort='descending', show_leaf_counts=True, ax=ax2, color_threshold=300) # 300 - расстояние между кластерами
-ax2.axhline(y=300, color='r', linestyle='--') # линия разделяющая кластеры
+distance = 300
+dendrogram(linked, orientation='top', distance_sort='descending', show_leaf_counts=True, ax=ax2, color_threshold=distance) # разделяет цветом кластеры
+ax2.axhline(y=distance, color='r', linestyle='--') # линия разделяющая кластеры
 ax2.set_xlabel("Индексы образцов")
 ax2.set_ylabel("Расстояние")
 ax2.set_title("Дендограмма")
