@@ -37,3 +37,4 @@ plt.ylabel('Признак 2')
 plt.legend()
 plt.grid()
 plt.show()
+
