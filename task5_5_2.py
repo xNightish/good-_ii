@@ -1,3 +1,4 @@
+from matplotlib import pyplot as plt
 import numpy as np
 
 # Данные
@@ -46,5 +47,24 @@ for i, cluster in enumerate(T):
 for cluster in X:
     print(cluster)
 
+# Визуализация результатов
+plt.figure(figsize=(10, 8))
 
+# Цвета для кластеров
+colors = ['r', 'g', 'b']
 
+# Отображение кластеров
+for i in range(len(X)):
+    cluster_points = np.array(X[i])  # Преобразуем в массив NumPy
+    plt.scatter(cluster_points[:, 0], cluster_points[:, 1], color=colors[i], label=f'Кластер {i+1}')
+
+# Отображение центров кластеров
+plt.scatter(centers[:, 0], centers[:, 1], color='black', marker='o', s=200, label='Центры кластеров')
+
+# Настройки графика
+plt.title('Визуализация кластеров')
+plt.xlabel('Ось X')
+plt.ylabel('Ось Y')
+plt.legend()
+plt.grid()
+plt.show()
