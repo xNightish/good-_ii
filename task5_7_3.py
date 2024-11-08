@@ -44,3 +44,14 @@ print("Обученные параметры w:", w)
 print("Итоговое значение среднего эмпирического риска Q:", Q)
 print("Последнее значение Qe:", Qe)
 
+# визуализация результатов
+import matplotlib.pyplot as plt
+plt.plot(coord_x, func(coord_x), color='blue', label='Исходная функция f(x)')
+plt.plot(coord_x, a(coord_x, w), color='red', label='Аппроксимация', linestyle='--', linewidth=2)
+plt.title('Аппроксимация функции f(x)')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+plt.grid()
+plt.savefig('task5_7_3.png')
+plt.show()
