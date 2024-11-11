@@ -29,7 +29,6 @@ data_y = np.hstack([np.ones(N1) * -1, np.ones(N2)])
 x_train, x_test, y_train, y_test = train_test_split(data_x, data_y, random_state=123,test_size=0.3, shuffle=True)
 T = 10
 max_depth = 3
-b_t = DecisionTreeClassifier(criterion='gini', max_depth=max_depth)
 w = np.ones(len(x_train)) / len(x_train) 
 algs, alpha = [], []
 
